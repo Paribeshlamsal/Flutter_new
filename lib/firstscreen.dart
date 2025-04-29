@@ -43,7 +43,7 @@ class _FirstScreenState extends State<FirstScreen> {
               children: [
                 TextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'Title'),
+                  decoration: const InputDecoration(labelText: 'What to do ?'),
                 ),
                 TextField(
                   controller: _descriptionController,
@@ -54,7 +54,7 @@ class _FirstScreenState extends State<FirstScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the box
+                  Navigator.of(context).pop(); // Close dialog
                 },
                 child: const Text('Cancel'),
               ),
@@ -76,10 +76,10 @@ class _FirstScreenState extends State<FirstScreen> {
 
                     _titleController.clear();
                     _descriptionController.clear();
-                    Navigator.of(context).pop(); // Close the box after adding
+                    Navigator.of(context).pop(); // Close dialog
                   }
                 },
-                child: const Text('Add'),
+                child: const Text('Add Todo'),
               ),
             ],
           ),
@@ -95,14 +95,35 @@ class _FirstScreenState extends State<FirstScreen> {
         itemBuilder: (context, index) {
           final todo = todos[index];
           return ListTile(
-            leading: Icon(
-              todo.isCompleted
-                  ? Icons.check_box
-                  : Icons.check_box_outline_blank,
-              color: todo.isCompleted ? Colors.green : null,
+            leading: IconButton(
+              icon: Icon(
+                todo.isCompleted
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                color: todo.isCompleted ? Colors.green : null,
+              ),
+              onPressed: () {
+                setState(() {
+                  todo.isCompleted = !todo.isCompleted;
+                });
+              },
             ),
-            title: Text(todo.title),
+            title: Text(
+              todo.title,
+              style: TextStyle(
+                decoration:
+                    todo.isCompleted ? TextDecoration.lineThrough : null,
+              ),
+            ),
             subtitle: Text(todo.description ?? ''),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                setState(() {
+                  todos.removeAt(index);
+                });
+              },
+            ),
           );
         },
       ),
